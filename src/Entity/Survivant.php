@@ -31,6 +31,13 @@ class Survivant
     #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'survivants')]
     private Collection $classe;
 
+    #[ORM\Column]
+    private ?int $puissance = null;
+
+    #[ORM\ManyToOne(inversedBy: 'survivants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Race $race = null;
+
     
     public function __construct()
     {
@@ -98,6 +105,30 @@ class Survivant
     public function removeClasse(Classe $classe): static
     {
         $this->classe->removeElement($classe);
+
+        return $this;
+    }
+
+    public function getPuissance(): ?int
+    {
+        return $this->puissance;
+    }
+
+    public function setPuissance(int $puissance): static
+    {
+        $this->puissance = $puissance;
+
+        return $this;
+    }
+
+    public function getRace(): ?Race
+    {
+        return $this->race;
+    }
+
+    public function setRace(?Race $race): static
+    {
+        $this->race = $race;
 
         return $this;
     }

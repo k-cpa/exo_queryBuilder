@@ -3,15 +3,11 @@
 {% block title %}Liste des surviviants{% endblock %}
 
 {% block body %}
-<div class="filter">
-    <a href={{path('app_home')}}>defaut</a>
-    <a href={{path('app_home' , {'filter': 'asc'} )}}>Z-A</a>
-    <a href={{path('app_home')}}>Nain</a>
-    <a href={{path('app_home')}}>Elf>=25</a>
-    <a href={{path('app_home')}}>Non Humain</a>
-</div>
 <main>
-
+    <div class="filter">
+      {# --VOTRE FORMULAIRE DE FILTRE ICI-- #}
+    </div>
+    
     <section id="survivants" >
         {% for survivant in survivants %}
 
@@ -28,7 +24,7 @@
                 {% for classe in survivant.classe %}
                     <img src="{{asset('images/class/' ~ classe.className ~'.png')}}" title="{{classe.className}}" alt="icone pour la classe {{classe.className}}">
                 {% endfor %}
-                    <span>puissance:{{survivant.puissance }}</span>
+                    <span class="puissance">puissance: {{survivant.puissance }}</span>
             </div>
         
         </article>

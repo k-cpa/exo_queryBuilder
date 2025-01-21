@@ -14,7 +14,14 @@
         {% endblock %}
     </head>
     <body>
-        {% include 'filter.html.twig' %}
+    <nav>
+        <ul>
+            <li><a href="{{path('app_home')}}">filtre bouttons</a></li>
+            <li><a href="{{path('app_filtre_survivant')}}">filtre formulaires</a></li>
+            <li><a href="{{path('app_power')}}">puissance</a></li>
+        </ul>
+    </nav>
+        
         {% block body %}{% endblock %}
     </body>
 </html>
