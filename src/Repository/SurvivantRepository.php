@@ -16,22 +16,36 @@ class SurvivantRepository extends ServiceEntityRepository
         parent::__construct($registry, Survivant::class);
     }
 
-    public function findByRace(string $race)
+    public function findByFilters(array $filters)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.race = :race')
-            ->setParameter('race', $race)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByName(string $nom)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.nom = :nom')
-            ->setParameter('nom', $nom)
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('s');
+        
+        // Filtrer par nom si présent
+        if (!empty($filters['nom'])) {
+            $qb->andWhere('s.nom LIKE :nom')
+               ->setParameter('nom', '%' . $filters['nom'] . '%');
+        }
+    
+        // Filtrer par race si présente
+        if (!empty($filters['race'])) {
+            $qb->andWhere('s.race IN (:race)')
+               ->setParameter('race', $filters['race']);
+        }
+    
+        // Filtrer par power_min si présent
+        if (!empty($filters['power_min'])) {
+            $qb->andWhere('s.puissance >= :puissance')
+               ->setParameter('puissance', $filters['power_min']);
+        }
+    
+        // Filtrer par classe si présente (multiple classes avec IN)
+        if (!empty($filters['classe'])) {
+            $qb->innerJoin('s.classe', 'c')
+               ->andWhere('c.id IN (:classIds)')
+               ->setParameter('classIds', $filters['classe']);
+        }
+    
+        return $qb->getQuery()->getResult();
     }
 
     public function findByRaceAndPower(string $race, int $puissance)
@@ -50,6 +64,16 @@ class SurvivantRepository extends ServiceEntityRepository
                 ->setParameter('puissance', $puissance);
             }
             return $qb->getQuery()->getResult();
+    }
+
+    public function totalRacePower ()
+    {
+        return $this->createQueryBuilder('s')
+            ->select ('r.race_name AS race', 'SUM(s.puissance) AS totalPower')
+            ->join('s.race', 'r')
+            ->groupBy('r.race_name')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findByNotRace(string $race)

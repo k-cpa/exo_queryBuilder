@@ -4,5 +4,12 @@
 
 {% block body %}
 <h1>Puissance de chaque race</h1>
-   
+
+   {% for racePower in totalRacePower %}
+        <p>Race: {{ racePower.race }}</p>
+        <p>Total Power: {{ racePower.totalPower }}</p>
+    {% else %}
+        <p>Aucun résultat trouvé.</p>
+    {% endfor %}
+    
 {% endblock %}

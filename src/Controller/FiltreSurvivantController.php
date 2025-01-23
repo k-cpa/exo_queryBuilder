@@ -22,21 +22,17 @@ final class FiltreSurvivantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-
-            if(!empty($data['nom'])) {
-                $survivants = $repository->findByName($data['nom']);
-            }
-
-            if(!empty($data['race']) && empty($data['power_min'])) {
-                $survivants = $repository->findByRace($data['race']);
-            }
-
-            if(!empty($data['power_min'])) {
-                $survivants = $repository->findByRaceAndPower(
-                    $data['race'] ?? null, 
-                    $data['power_min']
-                );
-            }
+    
+            // Construire un tableau de filtres à partir des données du formulaire
+            $filters = [
+                'nom' => $data['nom'] ?? null,
+                'race' => $data['race'] ?? null,
+                'power_min' => $data['power_min'] ?? null,
+                'classe' => $data['classe'] ?? null
+            ];
+    
+            // Appeler la méthode findByFilters du repository
+            $survivants = $repository->findByFilters($filters);
         }
        
         return $this->render('filtre_survivant/filtreSurvivant.html.twig', [
