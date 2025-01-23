@@ -16,6 +16,51 @@ class SurvivantRepository extends ServiceEntityRepository
         parent::__construct($registry, Survivant::class);
     }
 
+    public function findByRace(string $race)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.race = :race')
+            ->setParameter('race', $race)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByName(string $nom)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.nom = :nom')
+            ->setParameter('nom', $nom)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByRaceAndPower(string $race, int $puissance)
+    {
+
+        $qb = $this->createQueryBuilder('s');
+
+            if (!empty($race)) {
+                $qb->andWhere('s.race = :race')
+                ->setParameter('race', $race);
+            }
+        
+            if (!empty($puissance)) {
+                $qb->andWhere('s.puissance >= :puissance')
+                ->setParameter('race', $race)
+                ->setParameter('puissance', $puissance);
+            }
+            return $qb->getQuery()->getResult();
+    }
+
+    public function findByNotRace(string $race)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.race != :race')
+            ->setParameter('race', $race)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Survivant[] Returns an array of Survivant objects
     //     */
